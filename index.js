@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -16,8 +17,8 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 
 app.use(nodeSass({
-    src: __dirname + '/sass',
-    dest: __dirname + '/public/css',
+    src: path.join(__dirname, '/sass'),
+    dest: path.join(__dirname, '/public/css'),
     debug: false,
     indentedSyntax: true,
     outputStyle: 'compressed',
@@ -26,6 +27,7 @@ app.use(nodeSass({
 
 app.use(express.static('public'));
 
+app.set('views', path.join(__dirname, '/views'));
 app.engine('handlebars', expressHandlebars({
     defaultLayout: 'main'
 }));
@@ -44,14 +46,13 @@ app.get('/', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-	console.error('Unexpected error', err);
     if (err.message.search(/Failed to lookup view "(.*)" in views directory/g) > -1 || err.status === 404)
 		return res.status(404).render('404', {
 	        title: '404 Not Page Found',
 	        url: req.url
 	    });
-	else
-    	return res.status(500).send('An unexpected error occured.');
+	console.error('Unexpected Error', err);
+    return res.status(500).send('An unexpected error occured.');
 });
 
 app.listen(PORT, HOST, () => {
