@@ -44,23 +44,14 @@ app.get('/', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-	return next();
-	// // Handle 404 Errors
-	// if (err.message.search(/Failed to lookup view "(.*)" in views directory/g) < 0) return next();
-	//
-	// res.status(404);
-    // if (req.accepts('html')) {
-    //     return res.render('404', {
-	// 		title: '404 Not Page Found',
-    //         url: req.url
-    //     });
-    // } else if (req.accepts('json')) {
-    //     return res.sendJSON({
-    //         error: 'Not found'
-    //     });
-    // } else {
-    //     return res.type('txt').send('Not found');
-    // }
+	console.error('Unexpected error', err);
+    if (err.message.search(/Failed to lookup view "(.*)" in views directory/g) > -1 || err.status === 404)
+		return res.status(404).render('404', {
+	        title: '404 Not Page Found',
+	        url: req.url
+	    });
+	else
+    	return res.status(500).send('An unexpected error occured.');
 });
 
 app.listen(PORT, HOST, () => {
