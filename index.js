@@ -34,9 +34,22 @@ app.engine('handlebars', expressHandlebars({
 app.set('view engine', 'handlebars');
 
 app.get('/:page', (req, res) => {
-    res.render(req.params.page.toString().trim().toLowerCase(), {
+    return res.render(req.params.page.toString().trim().toLowerCase(), {
         title: req.params.page.toString().trim()
-    });
+    }, (err, html) => {
+		if (err) {
+			return res.render('404', {
+		        title: '404 Not Found',
+				url: req.url
+		    }, (err, html) => {
+				if (err) {
+					return res.status(500).send('Unexpected error occured after you encountered a 404.');
+				}
+				return res.status(404).send(html);
+			});
+		}
+		res.status(200).send(html);
+	});
 });
 
 app.get('/', (req, res) => {
@@ -45,15 +58,15 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use((err, req, res, next) => {
-    if (err.message.search(/Failed to lookup view "(.*)" in views directory/g) > -1 || err.status === 404)
-		return res.status(404).render('404', {
-	        title: '404 Not Page Found',
-	        url: req.url
-	    });
-	console.error('Unexpected Error', err);
-    return res.status(500).send('An unexpected error occured.');
-});
+// app.use((err, req, res, next) => {
+//     if (err.message.search(/Failed to lookup view "(.*)" in views directory/g) > -1 || err.status === 404)
+// 		return res.status(404).render('404', {
+// 	        title: '404 Not Page Found',
+// 	        url: req.url
+// 	    });
+// 	console.error('Unexpected Error', err);
+//     return res.status(500).send('An unexpected error occured.');
+// });
 
 app.listen(PORT, HOST, () => {
     console.log(`syfy-website listening on http://${HOST}:${PORT}`);
