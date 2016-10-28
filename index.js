@@ -1,8 +1,17 @@
 const express = require('express');
 const app = express();
+const nodeSass = require('node-sass-middleware');
 
 const PORT = process.env.PORT || 80;
 const HOST = '0.0.0.0';
+
+app.use(nodeSass({
+	src: __dirname + '/sass',
+	dest: __dirname + '/public/css',
+	outputStyle: 'compressed'
+}));
+
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/views/index.html');
