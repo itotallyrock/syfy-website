@@ -27,8 +27,9 @@ app.use(nodeSass({
 
 app.use(express.static('public'));
 
-app.set('views', path.join(__dirname, '/views'));
 app.engine('handlebars', expressHandlebars({
+	layoutsDir: path.join(__dirname, './views/layouts/'),
+	partialsDir: path.join(__dirname, './views/partials/'),
     defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
