@@ -8,7 +8,10 @@ const HOST = '0.0.0.0';
 app.use(nodeSass({
 	src: __dirname + '/sass',
 	dest: __dirname + '/public/css',
-	outputStyle: 'compressed'
+	debug: true,
+	indentedSyntax: true,
+	outputStyle: 'compressed',
+	prefix: '/css'
 }));
 
 app.use(express.static('public'));
@@ -20,5 +23,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, HOST, () => {
 	console.log(`syfy-website listening on http://${HOST}:${PORT}`);
 });
-
-
