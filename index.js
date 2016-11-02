@@ -24,14 +24,17 @@ app.use(nodeSass({
     prefix: '/css'
 }));
 
-app.use(express.static('public'));
+app.use(express.logger('dev'));
 
 app.engine('handlebars', expressHandlebars({
     layoutsDir: path.join(__dirname, './views/layouts/'),
     partialsDir: path.join(__dirname, './views/partials/'),
     defaultLayout: 'main'
 }));
+app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'handlebars');
+
+app.use(express.static(path.join(__dirname, '/public')));
 
 app.get('/faq', (req, res) => {
 	return res.render('faq', {
