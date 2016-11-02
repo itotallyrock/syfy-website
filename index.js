@@ -1,10 +1,9 @@
-const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const app = express();
+const nodeSass = require('node-sass-middleware');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const nodeSass = require('node-sass-middleware');
 const expressHandlebars = require('express-handlebars');
 
 const PORT = process.env.PORT || 80;
@@ -28,28 +27,37 @@ app.use(nodeSass({
 app.use(express.static('public'));
 
 app.engine('handlebars', expressHandlebars({
-	layoutsDir: path.join(__dirname, './views/layouts/'),
-	partialsDir: path.join(__dirname, './views/partials/'),
+    layoutsDir: path.join(__dirname, './views/layouts/'),
+    partialsDir: path.join(__dirname, './views/partials/'),
     defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
 
-app.get('/:page', (req, res) => {
-    return res.render(req.params.page.toString().trim().toLowerCase(), {
-        title: req.params.page.toString().trim()
-    }, (err, html) => {
-		if (err) {
-			return res.render('404', {
-		        title: '404 Not Found',
-				url: req.url
-		    }, (err, html) => {
-				if (err) {
-					return res.status(500).send('Unexpected error occured after you encountered a 404.');
-				}
-				return res.status(404).send(html);
-			});
-		}
-		res.status(200).send(html);
+app.get('/faq', (req, res) => {
+	return res.render('faq', {
+		title: 'Frequently Asked Questions'
+	});
+});
+
+app.get('/contact', (req, res) => {
+	return res.render('contact', {
+		title: 'Contact'
+	});
+});
+
+app.post('/contact', (req, res) => {
+	return res.send('Contacted');
+});
+
+app.get('/about', (req, res) => {
+	return res.render('about', {
+		title: 'About'
+	});
+});
+
+app.get('/pricing', (req, res) => {
+	return res.render('pricing', {
+		title: 'Pricing'
 	});
 });
 
