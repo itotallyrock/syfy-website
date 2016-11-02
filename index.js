@@ -24,8 +24,6 @@ app.use(nodeSass({
     prefix: '/css'
 }));
 
-app.use(express.logger('dev'));
-
 app.engine('handlebars', expressHandlebars({
     layoutsDir: path.join(__dirname, './views/layouts/'),
     partialsDir: path.join(__dirname, './views/partials/'),
